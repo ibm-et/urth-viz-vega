@@ -5,8 +5,9 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
 <link rel="import" href="../urth-core-dataframe/urth-core-dataframe.html">
-<link rel="import" href="urth-viz-vega.html" is="urth-core-import" package="ibm-et/urth-viz-vega">
+<link rel="import" href="../urth-viz-behaviors/urth-viz-selection-behavior.html">
 <link rel="import" href="../urth-viz-table/urth-viz-table.html">
+<link rel="import" href="urth-viz-vega.html" is="urth-core-import">
 
 <!--
 Represents a widget that lets the user choose between a set of visualizations for a given dataframe.
@@ -92,6 +93,10 @@ ref: String,
             }
         },
 
+        behaviors: [
+            Urth.VizSelectionBehavior
+        ],
+
         _typeChanged: function(newType) {
             if (this.spec && newType != 'table') {
                 this.spec.mark = newType;
@@ -104,6 +109,9 @@ ref: String,
         },
 
         ready: function() {
+            var selectionWatcher = require('selectionWatcher');
+            selectionWatcher(this.$$('#vega').view);
+
             // If a child dataframe is given, bind that value to df whenever it changes,
             // otherwise use the dataframe instance in the local DOM
             var df = this.querySelector('urth-core-dataframe') || this.$.df;
